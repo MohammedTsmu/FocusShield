@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FocusShield.Forms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -22,6 +23,23 @@ namespace FocusShield
 
         private void btnAddItem_Click(object sender, EventArgs e)
         {
+            ////// Get the input from TextBox and NumericUpDown
+            //string itemName = txtItemName.Text.Trim();
+            //int timeLimit = (int)nudTimeLimit.Value;
+
+            ////// Validate input
+            //if (string.IsNullOrEmpty(itemName))
+            //{
+            //    MessageBox.Show("Please enter an application or website name.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //    return;
+            //}
+
+            ////// Add the new row to DataGridView
+            //dgvBlockList.Rows.Add("App/Website", itemName, timeLimit);
+
+            ////// Clear the TextBox for new input
+            //txtItemName.Clear();
+
             // Get the input from TextBox and NumericUpDown
             string itemName = txtItemName.Text.Trim();
             int timeLimit = (int)nudTimeLimit.Value;
@@ -33,8 +51,18 @@ namespace FocusShield
                 return;
             }
 
-            // Add the new row to DataGridView
-            dgvBlockList.Rows.Add("App/Website", itemName, timeLimit);
+            // Determine if the input is a website (by checking for a '.' character)
+            if (itemName.Contains("."))
+            {
+                // Block the website
+                BlockWebsite(itemName);
+                dgvBlockList.Rows.Add("Website", itemName, timeLimit);
+            }
+            else
+            {
+                // Add application to the block list
+                dgvBlockList.Rows.Add("App", itemName, timeLimit);
+            }
 
             // Clear the TextBox for new input
             txtItemName.Clear();
@@ -42,10 +70,29 @@ namespace FocusShield
 
         private void btnRemoveItem_Click(object sender, EventArgs e)
         {
-            // Check if any row is selected
+            //// Check if any row is selected
+            //if (dgvBlockList.SelectedRows.Count > 0)
+            //{
+            //    // Remove the selected row
+            //    foreach (DataGridViewRow row in dgvBlockList.SelectedRows)
+            //    {
+            //        dgvBlockList.Rows.Remove(row);
+            //    }
+            //}
+            //else
+            //{
+            //    MessageBox.Show("Please select a row to remove.", "Remove Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //}
+
+            if (!AuthenticateUser())
+            {
+                MessageBox.Show("Unauthorized access. Changes are not allowed.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Proceed with removing the item if authentication is successful
             if (dgvBlockList.SelectedRows.Count > 0)
             {
-                // Remove the selected row
                 foreach (DataGridViewRow row in dgvBlockList.SelectedRows)
                 {
                     dgvBlockList.Rows.Remove(row);
@@ -130,6 +177,68 @@ namespace FocusShield
         {
             timerAppMonitor.Start();
         }
+
+        //Websites Blocking
+        private void BlockWebsite(string website)
+        {
+            string hostsPath = @"C:\Windows\System32\drivers\etc\hosts";
+            string redirectIP = "127.0.0.1";
+
+            try
+            {
+                // Read the current contents of the hosts file
+                string[] lines = File.ReadAllLines(hostsPath);
+
+                // Check if the website is already blocked
+                if (lines.Any(line => line.Contains(website)))
+                {
+                    MessageBox.Show($"{website} is already blocked.", "Website Block", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Append the redirect rule to the hosts file
+                using (StreamWriter sw = File.AppendText(hostsPath))
+                {
+                    sw.WriteLine($"{redirectIP} {website}");
+                }
+
+                MessageBox.Show($"{website} has been blocked successfully.", "Website Block", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to block {website}. Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void UnblockWebsite(string website)
+        {
+            string hostsPath = @"C:\Windows\System32\drivers\etc\hosts";
+
+            try
+            {
+                // Read the current contents of the hosts file
+                string[] lines = File.ReadAllLines(hostsPath);
+
+                // Filter out the line that contains the website
+                var updatedLines = lines.Where(line => !line.Contains(website)).ToArray();
+
+                // Write the updated content back to the hosts file
+                File.WriteAllLines(hostsPath, updatedLines);
+
+                MessageBox.Show($"{website} has been unblocked successfully.", "Website Unblock", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to unblock {website}. Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private bool AuthenticateUser()
+        {
+            LoginForm loginForm = new LoginForm();
+            return loginForm.ShowDialog() == DialogResult.OK;
+        }
+
 
     }
 }

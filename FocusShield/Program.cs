@@ -1,3 +1,5 @@
+using FocusShield.Forms;
+
 namespace FocusShield
 {
     internal static class Program
