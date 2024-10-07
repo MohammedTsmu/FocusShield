@@ -44,6 +44,7 @@
             toolStripMenuItem3 = new ToolStripMenuItem();
             label1 = new Label();
             btnRemoveItem = new Button();
+            timerAppMonitor = new System.Windows.Forms.Timer(components);
             ((System.ComponentModel.ISupportInitialize)dgvBlockList).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudTimeLimit).BeginInit();
             contextMenuTray.SuspendLayout();
@@ -118,6 +119,7 @@
             notifyIcon.Icon = (Icon)resources.GetObject("notifyIcon.Icon");
             notifyIcon.Text = "FocusShield is running";
             notifyIcon.Visible = true;
+            notifyIcon.DoubleClick += notifyIcon_DoubleClick;
             // 
             // contextMenuTray
             // 
@@ -164,6 +166,11 @@
             btnRemoveItem.UseVisualStyleBackColor = true;
             btnRemoveItem.Click += btnRemoveItem_Click;
             // 
+            // timerAppMonitor
+            // 
+            timerAppMonitor.Interval = 60000;
+            timerAppMonitor.Tick += timerAppMonitor_Tick;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -180,6 +187,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Focus Shield - Manage Your Focus";
             FormClosing += MainForm_FormClosing;
+            Load += MainForm_Load;
             ((System.ComponentModel.ISupportInitialize)dgvBlockList).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudTimeLimit).EndInit();
             contextMenuTray.ResumeLayout(false);
@@ -203,5 +211,6 @@
         private ToolStripMenuItem toolStripMenuItem1;
         private ToolStripMenuItem toolStripMenuItem2;
         private ToolStripMenuItem toolStripMenuItem3;
+        private System.Windows.Forms.Timer timerAppMonitor;
     }
 }
