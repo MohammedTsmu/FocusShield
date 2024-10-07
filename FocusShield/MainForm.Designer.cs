@@ -110,6 +110,7 @@
             btnAddItem.TabIndex = 3;
             btnAddItem.Text = "Add to Block List";
             btnAddItem.UseVisualStyleBackColor = true;
+            btnAddItem.Click += btnAddItem_Click;
             // 
             // notifyIcon
             // 
@@ -161,6 +162,7 @@
             btnRemoveItem.TabIndex = 5;
             btnRemoveItem.Text = "Remove Selected";
             btnRemoveItem.UseVisualStyleBackColor = true;
+            btnRemoveItem.Click += btnRemoveItem_Click;
             // 
             // MainForm
             // 
@@ -177,6 +179,7 @@
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Focus Shield - Manage Your Focus";
+            FormClosing += MainForm_FormClosing;
             ((System.ComponentModel.ISupportInitialize)dgvBlockList).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudTimeLimit).EndInit();
             contextMenuTray.ResumeLayout(false);
