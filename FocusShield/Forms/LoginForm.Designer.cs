@@ -28,33 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            lblPassword = new Label();
             txtPassword = new TextBox();
             btnLogin = new Button();
             SuspendLayout();
             // 
-            // lblPassword
-            // 
-            lblPassword.AutoSize = true;
-            lblPassword.Location = new Point(25, 43);
-            lblPassword.Name = "lblPassword";
-            lblPassword.Size = new Size(111, 20);
-            lblPassword.TabIndex = 0;
-            lblPassword.Text = "Enter Password:";
-            // 
             // txtPassword
             // 
-            txtPassword.Location = new Point(33, 86);
+            txtPassword.Location = new Point(31, 73);
             txtPassword.Name = "txtPassword";
             txtPassword.PasswordChar = '*';
-            txtPassword.Size = new Size(125, 27);
+            txtPassword.PlaceholderText = "Enter Password";
+            txtPassword.Size = new Size(303, 27);
             txtPassword.TabIndex = 1;
             // 
             // btnLogin
             // 
-            btnLogin.Location = new Point(31, 142);
+            btnLogin.Location = new Point(31, 119);
             btnLogin.Name = "btnLogin";
-            btnLogin.Size = new Size(94, 29);
+            btnLogin.Size = new Size(303, 29);
             btnLogin.TabIndex = 2;
             btnLogin.Text = "Login";
             btnLogin.UseVisualStyleBackColor = true;
@@ -64,19 +55,18 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(374, 218);
             Controls.Add(btnLogin);
             Controls.Add(txtPassword);
-            Controls.Add(lblPassword);
+            FormBorderStyle = FormBorderStyle.None;
             Name = "LoginForm";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "LoginForm";
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
-
-        private Label lblPassword;
         private TextBox txtPassword;
         private Button btnLogin;
     }

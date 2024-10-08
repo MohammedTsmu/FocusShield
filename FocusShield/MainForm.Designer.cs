@@ -45,6 +45,7 @@
             label1 = new Label();
             btnRemoveItem = new Button();
             timerAppMonitor = new System.Windows.Forms.Timer(components);
+            timerMonitor = new System.Windows.Forms.Timer(components);
             ((System.ComponentModel.ISupportInitialize)dgvBlockList).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudTimeLimit).BeginInit();
             contextMenuTray.SuspendLayout();
@@ -171,6 +172,11 @@
             timerAppMonitor.Interval = 60000;
             timerAppMonitor.Tick += timerAppMonitor_Tick;
             // 
+            // timerMonitor
+            // 
+            timerMonitor.Interval = 30000;
+            timerMonitor.Tick += timerMonitor_Tick;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -212,5 +218,6 @@
         private ToolStripMenuItem toolStripMenuItem2;
         private ToolStripMenuItem toolStripMenuItem3;
         private System.Windows.Forms.Timer timerAppMonitor;
+        private System.Windows.Forms.Timer timerMonitor;
     }
 }

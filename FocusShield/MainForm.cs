@@ -90,6 +90,12 @@ namespace FocusShield
                 return;
             }
 
+            ChallengeForm challengeForm = new ChallengeForm();
+            if (challengeForm.ShowDialog() != DialogResult.OK)
+            {
+                MessageBox.Show("Challenge not completed. Changes cannot be made.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             // Proceed with removing the item if authentication is successful
             if (dgvBlockList.SelectedRows.Count > 0)
             {
@@ -239,6 +245,26 @@ namespace FocusShield
             return loginForm.ShowDialog() == DialogResult.OK;
         }
 
+
+        //Restart the app if closed
+        private void timerMonitor_Tick(object sender, EventArgs e)
+        {
+            // Get all processes with the name "FocusShield"
+            var processes = Process.GetProcessesByName("FocusShield");
+
+            // If more than one instance is running, do nothing
+            if (processes.Length > 1)
+            {
+                return;
+            }
+
+            // If only one instance is running, continue monitoring
+            if (processes.Length == 0)
+            {
+                // Restart FocusShield
+                Process.Start(Application.ExecutablePath);
+            }
+        }
 
     }
 }
