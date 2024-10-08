@@ -34,6 +34,7 @@
             colItemType = new DataGridViewTextBoxColumn();
             colItemName = new DataGridViewTextBoxColumn();
             colTimeLimit = new DataGridViewTextBoxColumn();
+            colUsageTime = new DataGridViewTextBoxColumn();
             txtItemName = new TextBox();
             nudTimeLimit = new NumericUpDown();
             btnAddItem = new Button();
@@ -46,6 +47,8 @@
             btnRemoveItem = new Button();
             timerAppMonitor = new System.Windows.Forms.Timer(components);
             timerMonitor = new System.Windows.Forms.Timer(components);
+            cmbApplications = new ComboBox();
+            btnRefreshApplications = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvBlockList).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudTimeLimit).BeginInit();
             contextMenuTray.SuspendLayout();
@@ -55,11 +58,11 @@
             // 
             dgvBlockList.AccessibleDescription = "to list applications and websites.";
             dgvBlockList.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvBlockList.Columns.AddRange(new DataGridViewColumn[] { colItemType, colItemName, colTimeLimit });
+            dgvBlockList.Columns.AddRange(new DataGridViewColumn[] { colItemType, colItemName, colTimeLimit, colUsageTime });
             dgvBlockList.Location = new Point(12, 12);
             dgvBlockList.Name = "dgvBlockList";
             dgvBlockList.RowHeadersWidth = 51;
-            dgvBlockList.Size = new Size(776, 232);
+            dgvBlockList.Size = new Size(776, 132);
             dgvBlockList.TabIndex = 0;
             // 
             // colItemType
@@ -83,13 +86,20 @@
             colTimeLimit.Name = "colTimeLimit";
             colTimeLimit.Width = 125;
             // 
+            // colUsageTime
+            // 
+            colUsageTime.HeaderText = "Running Time (mins)";
+            colUsageTime.MinimumWidth = 6;
+            colUsageTime.Name = "colUsageTime";
+            colUsageTime.Width = 125;
+            // 
             // txtItemName
             // 
             txtItemName.AccessibleDescription = "to add new applications/websites.";
-            txtItemName.Location = new Point(12, 307);
+            txtItemName.Location = new Point(12, 150);
             txtItemName.Name = "txtItemName";
             txtItemName.PlaceholderText = "Enter Application or Website Name";
-            txtItemName.Size = new Size(620, 27);
+            txtItemName.Size = new Size(300, 27);
             txtItemName.TabIndex = 1;
             // 
             // nudTimeLimit
@@ -177,11 +187,32 @@
             timerMonitor.Interval = 30000;
             timerMonitor.Tick += timerMonitor_Tick;
             // 
+            // cmbApplications
+            // 
+            cmbApplications.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbApplications.FormattingEnabled = true;
+            cmbApplications.Location = new Point(318, 149);
+            cmbApplications.Name = "cmbApplications";
+            cmbApplications.Size = new Size(470, 28);
+            cmbApplications.TabIndex = 6;
+            // 
+            // btnRefreshApplications
+            // 
+            btnRefreshApplications.Location = new Point(318, 183);
+            btnRefreshApplications.Name = "btnRefreshApplications";
+            btnRefreshApplications.Size = new Size(470, 29);
+            btnRefreshApplications.TabIndex = 7;
+            btnRefreshApplications.Text = "Refresh Applications";
+            btnRefreshApplications.UseVisualStyleBackColor = true;
+            btnRefreshApplications.Click += btnRefreshApplications_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(btnRefreshApplications);
+            Controls.Add(cmbApplications);
             Controls.Add(btnRemoveItem);
             Controls.Add(label1);
             Controls.Add(btnAddItem);
@@ -208,9 +239,6 @@
         private NumericUpDown nudTimeLimit;
         private Button btnAddItem;
         private NotifyIcon notifyIcon;
-        private DataGridViewTextBoxColumn colItemType;
-        private DataGridViewTextBoxColumn colItemName;
-        private DataGridViewTextBoxColumn colTimeLimit;
         private Label label1;
         private Button btnRemoveItem;
         private ContextMenuStrip contextMenuTray;
@@ -219,5 +247,11 @@
         private ToolStripMenuItem toolStripMenuItem3;
         private System.Windows.Forms.Timer timerAppMonitor;
         private System.Windows.Forms.Timer timerMonitor;
+        private ComboBox cmbApplications;
+        private Button btnRefreshApplications;
+        private DataGridViewTextBoxColumn colItemType;
+        private DataGridViewTextBoxColumn colItemName;
+        private DataGridViewTextBoxColumn colTimeLimit;
+        private DataGridViewTextBoxColumn colUsageTime;
     }
 }
