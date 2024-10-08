@@ -4,11 +4,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.Drawing;
 using System.Linq;
+using System.Reflection.Metadata;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FocusShield
 {
@@ -218,6 +222,8 @@ namespace FocusShield
         //MainForm_FormClosing hides the form and displays the NotifyIcon.
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            FadeOutForm();
+
             // Save blocked applications to settings before closing
             SaveBlockedApplicationsToSettings();
 
@@ -341,6 +347,10 @@ namespace FocusShield
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            FadeInForm();
+            SetupGlobalExceptionHandling();
+
+
             // Load blocked applications into the DataGridView
             LoadBlockedApplicationsFromSettings();
 
@@ -524,6 +534,207 @@ namespace FocusShield
                 MessageBox.Show($"Failed to load blocked applications from settings. Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
+
+
+
+        //Styles//Styles//Styles//Styles//Styles//Styles//Styles//Styles//Styles//Styles//Styles//Styles
+        //Styles//Styles//Styles//Styles//Styles//Styles//Styles//Styles//Styles//Styles//Styles//Styles
+        //Styles//Styles//Styles//Styles//Styles//Styles//Styles//Styles//Styles//Styles//Styles//Styles
+
+        //1. Improve the DataGridView Layout
+        private void CustomizeDataGridView()
+        {
+            // Set column headers with better titles
+            dgvBlockList.Columns["colItemType"].HeaderText = "Type";
+            dgvBlockList.Columns["colItemName"].HeaderText = "Application/Website";
+            dgvBlockList.Columns["colTimeLimit"].HeaderText = "Time Limit (mins)";
+            dgvBlockList.Columns["colUsageTime"].HeaderText = "Usage Time";
+
+            // Set column widths
+            dgvBlockList.Columns["colItemType"].Width = 100;
+            dgvBlockList.Columns["colItemName"].Width = 200;
+            dgvBlockList.Columns["colTimeLimit"].Width = 150;
+            dgvBlockList.Columns["colUsageTime"].Width = 150;
+
+            // Auto resize rows based on content
+            dgvBlockList.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+
+            // Set row height
+            dgvBlockList.RowTemplate.Height = 40;
+
+            // Set a clean, modern style
+            dgvBlockList.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            dgvBlockList.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvBlockList.DefaultCellStyle.Font = new Font("Segoe UI", 10);
+            dgvBlockList.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvBlockList.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+        }
+
+
+        //Add Icons to Buttons
+        //private void SetButtonIcons()
+        //{
+        //    // Load icons from the embedded resources
+        //    btnAddItem.Image = Properties.Resources.Add_PNG_32px;  // Example: Add_PNG_32px is the name of the image in resources
+        //    btnRemoveItem.Image = Properties.Resources.Delete_PNG_32px;
+        //    btnRefreshApplications.Image = Properties.Resources.Refresh_PNG_32px;
+
+        //    // Set icon alignment and size for Add button
+        //    btnAddItem.ImageAlign = ContentAlignment.MiddleLeft;
+        //    btnAddItem.TextAlign = ContentAlignment.MiddleRight;
+        //    btnAddItem.Padding = new Padding(10);
+        //    btnAddItem.TextImageRelation = TextImageRelation.ImageBeforeText; // Display image before text
+
+        //    // Set icon alignment and size for Remove button
+        //    btnRemoveItem.ImageAlign = ContentAlignment.MiddleLeft;
+        //    btnRemoveItem.TextAlign = ContentAlignment.MiddleRight;
+        //    btnRemoveItem.Padding = new Padding(10);
+        //    btnRemoveItem.TextImageRelation = TextImageRelation.ImageBeforeText;
+
+        //    // Set icon alignment and size for Refresh button
+        //    btnRefreshApplications.ImageAlign = ContentAlignment.MiddleLeft;
+        //    btnRefreshApplications.TextAlign = ContentAlignment.MiddleRight;
+        //    btnRefreshApplications.Padding = new Padding(10);
+        //    btnRefreshApplications.TextImageRelation = TextImageRelation.ImageBeforeText;
+        //}
+
+
+
+
+
+        //3. Add ToolTips for Better User Experience
+        //ToolTips will give the user hints about what each button or input does.
+        private void SetToolTips()
+        {
+
+            ToolTip toolTip = new ToolTip();
+            toolTip.SetToolTip(btnAddItem, "Add a new application or website to the block list.");
+            toolTip.SetToolTip(btnRemoveItem, "Remove the selected application or website from the block list.");
+            toolTip.SetToolTip(btnRefreshApplications, "Refresh the list of running applications.");
+            toolTip.SetToolTip(cmbApplications, "Select an application to block.");
+            toolTip.SetToolTip(txtItemName, "Enter the website URL to block.");
+            toolTip.SetToolTip(nudTimeLimit, "Set the time limit (in minutes) for the selected application or website.");
+        }
+       
+
+
+
+        //4. Dark/Light Theme Support
+        private void ToggleTheme(bool isDarkTheme)
+        {
+            if (isDarkTheme)
+            {
+                this.BackColor = Color.FromArgb(45, 45, 48);
+                dgvBlockList.BackgroundColor = Color.FromArgb(28, 28, 28);
+                dgvBlockList.DefaultCellStyle.BackColor = Color.FromArgb(28, 28, 28);
+                dgvBlockList.DefaultCellStyle.ForeColor = Color.White;
+
+                foreach (Control control in this.Controls)
+                {
+                    if (control is Button btn)
+                    {
+                        btn.BackColor = Color.FromArgb(63, 63, 70);
+                        btn.ForeColor = Color.White;
+                    }
+                }
+            }
+            else
+            {
+                this.BackColor = Color.White;
+                dgvBlockList.BackgroundColor = Color.White;
+                dgvBlockList.DefaultCellStyle.BackColor = Color.White;
+                dgvBlockList.DefaultCellStyle.ForeColor = Color.Black;
+
+                foreach (Control control in this.Controls)
+                {
+                    if (control is Button btn)
+                    {
+                        btn.BackColor = SystemColors.Control;
+                        btn.ForeColor = Color.Black;
+                    }
+                }
+            }
+        }
+
+
+        private void ToggleThemeCheckBox_CheckStateChanged(object sender, EventArgs e)
+        {
+            ToggleTheme(true);
+        }
+
+
+        //5. Handle Unhandled Exceptions Gracefully
+        //Call SetupGlobalExceptionHandling() in your MainForm_Load method.
+
+        private void SetupGlobalExceptionHandling()
+        {
+            Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(GlobalExceptionHandler);
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionHandler);
+        }
+
+        private void GlobalExceptionHandler(object sender, System.Threading.ThreadExceptionEventArgs e)
+        {
+            MessageBox.Show("An unexpected error occurred: " + e.Exception.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception ex = (Exception)e.ExceptionObject;
+            MessageBox.Show("An unhandled error occurred: " + ex.Message, "Critical Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+
+
+        //6. User-friendly Notifications
+        private void ShowBalloonNotification(string title, string text)
+        {
+            //Call this function whenever a website/ app is blocked or unblocked.
+            notifyIcon.BalloonTipTitle = title;
+            notifyIcon.BalloonTipText = text;
+            notifyIcon.ShowBalloonTip(3000);
+        }
+
+
+        //7. Smooth UI Animations
+        //Call FadeInForm() when the form loads, and FadeOutForm() when closing or minimizing to the system tray.
+        private async void FadeInForm()
+        {
+            for (double opacity = 0.0; opacity <= 1.0; opacity += 0.05)
+            {
+                this.Opacity = opacity;
+                await Task.Delay(10); // Adjust for smoother/faster animation
+            }
+        }
+
+        private async void FadeOutForm()
+        {
+            for (double opacity = 1.0; opacity >= 0.0; opacity -= 0.05)
+            {
+                this.Opacity = opacity;
+                await Task.Delay(10);
+            }
+            this.Hide();
+        }
+
+        
+
+
+
+
+
+
+        //Final Implementation
+        //Once you implement these suggestions, your app will have a polished look and feel, providing a better user experience.Here’s what you need to do in summary:
+
+        //Customize DataGridView layout for a cleaner look.
+        //Add icons to buttons to enhance the interface.
+        //Add tooltips to make the app more user-friendly.
+        //Implement dark/light theme switching for better usability.
+        //Handle unhandled exceptions globally.
+        //Add smooth notifications for blocking/unblocking actions.
+        //Add simple animations for form transitions.
 
 
     }

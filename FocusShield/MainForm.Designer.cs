@@ -49,6 +49,7 @@
             timerMonitor = new System.Windows.Forms.Timer(components);
             cmbApplications = new ComboBox();
             btnRefreshApplications = new Button();
+            ToggleThemeCheckBox = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)dgvBlockList).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudTimeLimit).BeginInit();
             contextMenuTray.SuspendLayout();
@@ -206,11 +207,23 @@
             btnRefreshApplications.UseVisualStyleBackColor = true;
             btnRefreshApplications.Click += btnRefreshApplications_Click;
             // 
+            // ToggleThemeCheckBox
+            // 
+            ToggleThemeCheckBox.AutoSize = true;
+            ToggleThemeCheckBox.Location = new Point(649, 444);
+            ToggleThemeCheckBox.Name = "ToggleThemeCheckBox";
+            ToggleThemeCheckBox.Size = new Size(111, 24);
+            ToggleThemeCheckBox.TabIndex = 8;
+            ToggleThemeCheckBox.Text = "Dark Theme";
+            ToggleThemeCheckBox.UseVisualStyleBackColor = true;
+            ToggleThemeCheckBox.CheckStateChanged += ToggleThemeCheckBox_CheckStateChanged;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 517);
+            Controls.Add(ToggleThemeCheckBox);
             Controls.Add(btnRefreshApplications);
             Controls.Add(cmbApplications);
             Controls.Add(btnRemoveItem);
@@ -252,5 +265,6 @@
         private DataGridViewTextBoxColumn colItemName;
         private DataGridViewTextBoxColumn colTimeLimit;
         private DataGridViewTextBoxColumn colUsageTime;
+        private CheckBox ToggleThemeCheckBox;
     }
 }
