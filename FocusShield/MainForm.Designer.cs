@@ -105,7 +105,7 @@
             // nudTimeLimit
             // 
             nudTimeLimit.AccessibleDescription = "to specify time limits for each item.";
-            nudTimeLimit.Location = new Point(12, 376);
+            nudTimeLimit.Location = new Point(12, 443);
             nudTimeLimit.Maximum = new decimal(new int[] { 1440, 0, 0, 0 });
             nudTimeLimit.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             nudTimeLimit.Name = "nudTimeLimit";
@@ -116,7 +116,7 @@
             // btnAddItem
             // 
             btnAddItem.AccessibleDescription = "for adding/removing items.";
-            btnAddItem.Location = new Point(12, 409);
+            btnAddItem.Location = new Point(12, 476);
             btnAddItem.Name = "btnAddItem";
             btnAddItem.Size = new Size(300, 29);
             btnAddItem.TabIndex = 3;
@@ -161,15 +161,15 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(12, 353);
+            label1.Location = new Point(12, 420);
             label1.Name = "label1";
-            label1.Size = new Size(620, 20);
+            label1.Size = new Size(438, 20);
             label1.TabIndex = 4;
-            label1.Text = "Minimum: 1 (minimum allowed time in minutes), Maximum: 1440 (set maximum to 24 hours)";
+            label1.Text = "Minimum time 1 minute & Maximum time 1440 minutes (24 hours)";
             // 
             // btnRemoveItem
             // 
-            btnRemoveItem.Location = new Point(332, 409);
+            btnRemoveItem.Location = new Point(332, 476);
             btnRemoveItem.Name = "btnRemoveItem";
             btnRemoveItem.Size = new Size(300, 29);
             btnRemoveItem.TabIndex = 5;
@@ -210,7 +210,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(800, 517);
             Controls.Add(btnRefreshApplications);
             Controls.Add(cmbApplications);
             Controls.Add(btnRemoveItem);
@@ -219,7 +219,6 @@
             Controls.Add(nudTimeLimit);
             Controls.Add(txtItemName);
             Controls.Add(dgvBlockList);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Focus Shield - Manage Your Focus";

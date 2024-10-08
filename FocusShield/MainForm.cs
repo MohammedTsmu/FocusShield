@@ -279,6 +279,14 @@ namespace FocusShield
                                 // Match the process name
                                 if (process.ProcessName.Equals(itemName, StringComparison.OrdinalIgnoreCase))
                                 {
+                                    // If the application is permanently blocked, kill the process immediately
+                                    if (appTimeUsage.ContainsKey(itemName) && appTimeUsage[itemName] == int.MaxValue)
+                                    {
+                                        process.Kill();
+                                        MessageBox.Show($"{itemName} is permanently blocked and has been terminated.", "FocusShield", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        continue; // Skip further checks for permanently blocked apps
+                                    }
+
                                     // Update or initialize the app's usage time in the dictionary
                                     if (appTimeUsage.ContainsKey(itemName))
                                     {
@@ -298,7 +306,13 @@ namespace FocusShield
                                         // Kill the process if time limit exceeded
                                         process.Kill();
                                         MessageBox.Show($"{itemName} has been blocked after exceeding the time limit.", "FocusShield", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                        appTimeUsage[itemName] = 0; // Reset usage after blocking
+
+                                        // Mark the application as permanently blocked
+                                        appTimeUsage[itemName] = int.MaxValue;
+                                        row.Cells["colUsageTime"].Value = "Blocked";
+
+                                        // Save the blocked state
+                                        SaveBlockedApplicationsToSettings();
                                     }
                                 }
                             }
@@ -320,6 +334,8 @@ namespace FocusShield
                 timerAppMonitor.Start(); // Restart timer after processing
             }
         }
+
+
 
 
 
@@ -441,14 +457,15 @@ namespace FocusShield
 
                 foreach (DataGridViewRow row in dgvBlockList.Rows)
                 {
-                    if (row.Cells["colItemName"].Value != null && row.Cells["colItemType"].Value != null && row.Cells["colTimeLimit"].Value != null)
+                    if (row.Cells["colItemName"].Value != null && row.Cells["colItemType"].Value != null && row.Cells["colTimeLimit"].Value != null && row.Cells["colUsageTime"].Value != null)
                     {
                         string itemType = row.Cells["colItemType"].Value.ToString();
                         string itemName = row.Cells["colItemName"].Value.ToString();
                         string timeLimit = row.Cells["colTimeLimit"].Value.ToString();
+                        string usageTime = row.Cells["colUsageTime"].Value.ToString() == "Blocked" ? "Blocked" : appTimeUsage.ContainsKey(itemName) ? appTimeUsage[itemName].ToString() : "0";
 
-                        // Format: ItemType,ItemName,TimeLimit
-                        blockedItems.Add($"{itemType},{itemName},{timeLimit}");
+                        // Format: ItemType,ItemName,TimeLimit,UsageTime
+                        blockedItems.Add($"{itemType},{itemName},{timeLimit},{usageTime}");
                     }
                 }
 
@@ -464,6 +481,8 @@ namespace FocusShield
 
 
 
+
+
         private void LoadBlockedApplicationsFromSettings()
         {
             try
@@ -476,15 +495,25 @@ namespace FocusShield
                     {
                         string[] parts = blockedItem.Split(',');
 
-                        if (parts.Length == 3)
+                        if (parts.Length == 4)
                         {
                             string itemType = parts[0];
                             string itemName = parts[1];
                             int timeLimit;
+                            string usageTime = parts[3];
 
                             if (int.TryParse(parts[2], out timeLimit))
                             {
-                                dgvBlockList.Rows.Add(itemType, itemName, timeLimit);
+                                dgvBlockList.Rows.Add(itemType, itemName, timeLimit, usageTime);
+
+                                if (usageTime == "Blocked")
+                                {
+                                    appTimeUsage[itemName] = int.MaxValue; // Permanently blocked apps
+                                }
+                                else if (int.TryParse(usageTime, out int parsedUsageTime))
+                                {
+                                    appTimeUsage[itemName] = parsedUsageTime;
+                                }
                             }
                         }
                     }
@@ -496,9 +525,6 @@ namespace FocusShield
             }
         }
 
-        private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
-        {
 
-        }
     }
 }

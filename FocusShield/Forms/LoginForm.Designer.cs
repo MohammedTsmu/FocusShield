@@ -30,11 +30,12 @@
         {
             txtPassword = new TextBox();
             btnLogin = new Button();
+            label1 = new Label();
             SuspendLayout();
             // 
             // txtPassword
             // 
-            txtPassword.Location = new Point(31, 73);
+            txtPassword.Location = new Point(31, 97);
             txtPassword.Name = "txtPassword";
             txtPassword.PasswordChar = '*';
             txtPassword.PlaceholderText = "Enter Password";
@@ -43,7 +44,7 @@
             // 
             // btnLogin
             // 
-            btnLogin.Location = new Point(31, 119);
+            btnLogin.Location = new Point(31, 130);
             btnLogin.Name = "btnLogin";
             btnLogin.Size = new Size(303, 29);
             btnLogin.TabIndex = 2;
@@ -51,11 +52,22 @@
             btnLogin.UseVisualStyleBackColor = true;
             btnLogin.Click += btnLogin_Click;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(31, 48);
+            label1.Name = "label1";
+            label1.Size = new Size(155, 20);
+            label1.TabIndex = 3;
+            label1.Text = "SECURITY PASSWORD";
+            // 
             // LoginForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.LightGray;
             ClientSize = new Size(374, 218);
+            Controls.Add(label1);
             Controls.Add(btnLogin);
             Controls.Add(txtPassword);
             FormBorderStyle = FormBorderStyle.None;
@@ -69,5 +81,6 @@
         #endregion
         private TextBox txtPassword;
         private Button btnLogin;
+        private Label label1;
     }
 }
